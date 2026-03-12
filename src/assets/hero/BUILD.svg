@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <rect width="300" height="300" fill="#1a1820"/>
+  <rect x="1" y="1" width="298" height="298" fill="none" stroke="#d4a96a" stroke-width="2"/>
+  <text x="150" y="130" font-family="monospace" font-size="48" fill="#d4a96a" text-anchor="middle" opacity="0.3">⬡</text>
+  <text x="150" y="185" font-family="monospace" font-size="13" fill="#d4a96a" text-anchor="middle" letter-spacing="4" opacity="0.6">BUILD</text>
+  <text x="150" y="215" font-family="monospace" font-size="10" fill="#d4a96a" text-anchor="middle" letter-spacing="2" opacity="0.35">placeholder</text>
+</svg>

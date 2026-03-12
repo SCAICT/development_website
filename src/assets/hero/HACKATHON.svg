@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <rect width="400" height="300" fill="#1a1820"/>
+  <rect x="1" y="1" width="398" height="298" fill="none" stroke="#6dab80" stroke-width="2"/>
+  <text x="200" y="120" font-family="monospace" font-size="48" fill="#6dab80" text-anchor="middle" opacity="0.3">▲</text>
+  <text x="200" y="180" font-family="monospace" font-size="13" fill="#6dab80" text-anchor="middle" letter-spacing="4" opacity="0.6">HACKATHON</text>
+  <text x="200" y="210" font-family="monospace" font-size="10" fill="#6dab80" text-anchor="middle" letter-spacing="2" opacity="0.35">placeholder</text>
+</svg>

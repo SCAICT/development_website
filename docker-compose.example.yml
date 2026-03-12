@@ -1,0 +1,7 @@
+services:
+  scaict-site:
+    build:
+      context: .
+    ports:
+      - "${APP_PORT:-12019}:80"
+    restart: unless-stopped
