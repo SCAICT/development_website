@@ -46,11 +46,13 @@ export function BootScreen({ onDone }) {
             {line.text || "\u00a0"}
           </div>
         ))}
-        <div className="boot-log-line boot-log-prompt boot-caret">█</div>
+        <div className="boot-log-line boot-log-prompt boot-caret"></div>
       </div>
 
       <div className="boot-right">
         <pre className="boot-logo-ascii">{BOOT_ASCII}</pre>
+        <br />
+        <br />
         <img
           src={mascotImage}
           alt="SCAICT Mascot"
@@ -74,3 +76,4 @@ export function BootScreen({ onDone }) {
     </div>
   );
 }
+

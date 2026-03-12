@@ -146,7 +146,7 @@ export function EventsPage() {
               <h3 style={{ fontFamily: "var(--head)", fontSize: 20, color: event.color, marginBottom: 10 }}>
                 {event.title}
               </h3>
-              <p style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--text-dim)", lineHeight: 1.8 }}>
+              <p style={{ fontFamily: "var(--mono)", fontSize: 15, color: "var(--text-dim)", lineHeight: 1.8 }}>
                 {event.desc}
               </p>
             </div>

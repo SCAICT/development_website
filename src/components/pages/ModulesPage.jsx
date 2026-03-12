@@ -38,7 +38,7 @@ export function ModulesPage() {
       <div
         style={{
           fontFamily: "var(--mono)",
-          fontSize: 10,
+          fontSize: 14,
           background: "var(--cream)",
           color: "var(--coal)",
           padding: "4px 12px",
@@ -115,7 +115,7 @@ export function ModulesPage() {
                 <div
                   style={{
                     fontFamily: "var(--mono)",
-                    fontSize: 11,
+                    fontSize: 14,
                     color: module.color,
                     letterSpacing: 2,
                     marginTop: 4
@@ -130,7 +130,7 @@ export function ModulesPage() {
                       key={tag}
                       style={{
                         fontFamily: "var(--mono)",
-                        fontSize: 9,
+                        fontSize: 13,
                         letterSpacing: 1.5,
                         padding: "3px 10px",
                         border: `1px solid ${
@@ -179,7 +179,7 @@ export function ModulesPage() {
           <div
             style={{
               fontFamily: "var(--mono)",
-              fontSize: 12,
+              fontSize: 14,
               color: "var(--text-faint)",
               marginTop: 6
             }}
@@ -194,7 +194,7 @@ export function ModulesPage() {
           rel="noreferrer"
           style={{
             fontFamily: "var(--mono)",
-            fontSize: 11,
+            fontSize: 13,
             letterSpacing: 2,
             fontWeight: 700,
             padding: "12px 32px",
