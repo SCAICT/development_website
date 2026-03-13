@@ -258,22 +258,18 @@ p {
   background: transparent;
 }
 
-/* entering: 新頁面組合進來 */
+/* entering / exiting：container 本身完全不動，動畫全交給各元素的 inline style */
 .page-view.entering {
   display: block;
-  animation: pageAssemble 0.45s steps(5) forwards;
   pointer-events: none;
 }
 
-/* exiting: 舊頁面解構出去 */
 .page-view.exiting {
   display: block;
-  animation: pageDisassemble 0.32s steps(4) forwards;
   pointer-events: none;
   z-index: 11;
 }
 
-/* 靜止顯示 */
 .page-view.active {
   display: block;
 }
@@ -290,22 +286,22 @@ p {
   background: var(--rose);
 }
 
-/* 新頁面：從下方碎片拼接進來 */
-@keyframes pageAssemble {
-  0%   { opacity: 0; transform: translateY(32px) scaleY(0.96); filter: blur(6px) contrast(1.4); clip-path: inset(8% 2% 8% 2%); }
-  20%  { opacity: 0.4; transform: translateY(18px) scaleY(0.98); filter: blur(3px) contrast(1.2); clip-path: inset(4% 1% 4% 1%); }
-  50%  { opacity: 0.75; transform: translateY(6px) scaleY(0.99); filter: blur(1px) sepia(0.3); clip-path: inset(1% 0% 1% 0%); }
-  80%  { opacity: 0.92; transform: translateY(-2px); filter: none; clip-path: inset(0%); }
-  100% { opacity: 1; transform: translateY(0); filter: none; clip-path: inset(0%); }
+/* ── Flash overlay ── */
+.nav-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background: var(--rose);
+  animation: navFlash 0.56s ease forwards;
+}
+@keyframes navFlash {
+  0%   { opacity: 0; }
+  18%  { opacity: 0.12; }
+  45%  { opacity: 0.06; }
+  100% { opacity: 0; }
 }
 
-/* 舊頁面：往上散開消失 */
-@keyframes pageDisassemble {
-  0%   { opacity: 1; transform: translateY(0) scale(1); filter: none; clip-path: inset(0%); }
-  30%  { opacity: 0.7; transform: translateY(-10px) scale(1.01); filter: sepia(0.5) contrast(1.1); clip-path: inset(1% 0% 1% 0%); }
-  70%  { opacity: 0.25; transform: translateY(-24px) scale(1.02); filter: sepia(1) blur(2px); clip-path: inset(3% 1% 3% 1%); }
-  100% { opacity: 0; transform: translateY(-40px) scale(1.03); filter: blur(8px); clip-path: inset(6% 2% 6% 2%); }
-}
 
 .cutout {
   background: var(--cream);
@@ -333,6 +329,362 @@ p {
   background: var(--slate);
   color: var(--cream);
   box-shadow: 3px 3px 0 var(--coal);
+}
+
+.home-shell {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top, rgba(212, 117, 106, 0.12), transparent 30%),
+    linear-gradient(180deg, #121019 0%, #0f0e14 54%, #13111c 100%);
+}
+
+.home-ambient {
+  position: absolute;
+  inset: auto;
+  border-radius: 999px;
+  filter: blur(50px);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.home-ambient-rose {
+  top: 12%;
+  left: 8%;
+  width: 300px;
+  height: 300px;
+  background: rgba(212, 117, 106, 0.14);
+}
+
+.home-ambient-slate {
+  right: 10%;
+  bottom: 18%;
+  width: 380px;
+  height: 380px;
+  background: rgba(94, 143, 191, 0.11);
+}
+
+.home-grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(rgba(237, 229, 216, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(237, 229, 216, 0.05) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 85%);
+}
+
+.home-masthead {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 28px 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.home-masthead-meta {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.34em;
+  color: var(--text-faint);
+}
+
+.home-masthead-title {
+  font-family: var(--head);
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+  letter-spacing: 0.28em;
+  color: var(--ash);
+}
+
+/* ── 主視覺區（置中封面） ── */
+.home-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+/* 置中的內容柱 */
+.home-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(600px, 56vw);
+}
+
+/* kicker 標籤 */
+.home-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 20px;
+  padding: 7px 14px;
+  border: 1px solid rgba(212, 117, 106, 0.3);
+  background: rgba(17, 14, 22, 0.72);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.26em;
+  color: var(--ash);
+}
+
+.home-kicker-bracket {
+  color: var(--rose);
+  font-size: 1.1em;
+}
+
+/* 主標區塊 */
+.home-title-block {
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.home-title-bg {
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  font-family: var(--head);
+  font-size: clamp(5.2rem, 11vw, 11rem);
+  line-height: 0.88;
+  letter-spacing: -0.03em;
+  color: rgba(212, 117, 106, 0.12);
+  user-select: none;
+  pointer-events: none;
+}
+
+.home-title {
+  position: relative;
+  font-family: var(--head);
+  font-size: clamp(5.2rem, 11vw, 11rem);
+  line-height: 0.88;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--rose);
+  text-transform: uppercase;
+  transform: rotate(-1deg);
+  user-select: none;
+  text-rendering: optimizeLegibility;
+}
+
+/* 分隔線 */
+.home-rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 16px 0 18px;
+}
+
+.home-rule-line {
+  flex: 1;
+  height: 2px;
+  background: var(--rose);
+}
+
+.home-rule-line-faint {
+  height: 1px;
+  background: var(--border-light);
+}
+
+.home-rule-dot {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--rose);
+}
+
+/* 副標 cutouts */
+.home-cutouts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+/* 宣言 */
+.home-manifesto {
+  max-width: 480px;
+  margin-bottom: 20px;
+  padding: 13px 18px;
+  border-left: 3px solid var(--rose);
+  background: rgba(42, 38, 32, 0.82);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.9;
+}
+
+.home-manifesto p {
+  color: var(--text-dim);
+  font-size: inherit;
+}
+
+.home-manifesto strong {
+  color: var(--rose);
+  font-size: inherit;
+}
+
+/* 打字機 */
+.home-type {
+  min-height: 36px;
+  margin-bottom: 26px;
+  font-family: var(--head);
+  font-size: clamp(0.92rem, 1.7vw, 1.32rem);
+  letter-spacing: 0.12em;
+  color: var(--sand);
+}
+
+/* CTA 按鈕 */
+.home-primary-cta {
+  display: inline-block;
+  padding: 13px 28px;
+  border: 2px solid var(--coal);
+  background: var(--rose);
+  box-shadow: 4px 4px 0 var(--coal);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--coal);
+  transition: transform 0.12s steps(2), box-shadow 0.12s steps(2);
+}
+
+.home-primary-cta:hover,
+.home-primary-cta:focus-visible {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--coal);
+}
+
+/* ── 裝飾元素 ── */
+
+/* 左右側直排字 */
+.home-side-label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.42em;
+  color: var(--text-faint);
+  user-select: none;
+  pointer-events: none;
+}
+
+.home-side-label-right {
+  left: auto;
+  right: 16px;
+  transform: translateY(-50%) rotate(0deg);
+}
+
+/* 角落括號 */
+.home-corner {
+  position: absolute;
+  color: rgba(212, 117, 106, 0.35);
+  pointer-events: none;
+}
+
+.home-corner-tl {
+  top: 18px;
+  left: 52px;
+}
+
+.home-corner-br {
+  bottom: 18px;
+  right: 52px;
+}
+
+/* 圓形印章 */
+.home-stamp {
+  position: absolute;
+  top: 12%;
+  right: 7%;
+  width: clamp(80px, 8vw, 110px);
+  transform: rotate(12deg);
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.home-stamp-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* 左下角標籤堆疊 */
+.home-tags {
+  position: absolute;
+  bottom: 14%;
+  left: 7%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.home-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px solid rgba(210, 190, 170, 0.22);
+  background: rgba(15, 14, 20, 0.6);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--text-faint);
+}
+
+/* 浮水印 */
+.home-watermark {
+  position: absolute;
+  right: 52px;
+  bottom: 10px;
+  font-family: var(--head);
+  font-size: clamp(5rem, 9vw, 8.5rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(210, 190, 170, 0.06);
+  user-select: none;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-marquee {
+  position: relative;
+  z-index: 3;
+  height: 34px;
+  overflow: hidden;
+  display: none;
+  align-items: center;
+  background: var(--rose);
+  border-top: 2px solid var(--coal);
+  flex-shrink: 0;
+}
+
+.home-marquee-track {
+  display: flex;
+  white-space: nowrap;
+  animation: marqueeScroll 22s linear infinite;
+}
+
+.home-marquee-item {
+  padding: 0 28px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  color: var(--coal);
 }
 
 .tape {
@@ -438,6 +790,12 @@ p {
   to   { transform: translateX(-50%); }
 }
 
+@media (min-width: 1600px) {
+  .home-marquee {
+    display: flex;
+  }
+}
+
 .type-cursor,
 .boot-caret {
   animation: blink 1s steps(1) infinite;
@@ -453,6 +811,21 @@ p {
   .zine-grid {
     grid-template-columns: repeat(6, 1fr);
   }
+
+  .home-center {
+    width: min(540px, 70vw);
+  }
+
+  .home-corner,
+  .home-tags,
+  .home-side-label {
+    display: none;
+  }
+
+  .home-stamp {
+    top: 8%;
+    right: 4%;
+  }
 }
 
 @media (max-width: 720px) {
@@ -467,5 +840,50 @@ p {
     min-height: 320px;
     border-left: 0;
     border-top: 1px solid rgba(200, 190, 175, 0.1);
+  }
+
+  .home-masthead {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: start;
+    padding: 12px 16px 10px;
+  }
+
+  .home-masthead-title {
+    letter-spacing: 0.18em;
+  }
+
+  .home-center {
+    width: min(460px, 88vw);
+  }
+
+  .home-kicker {
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    padding: 6px 10px;
+  }
+
+  .home-manifesto {
+    padding: 12px 14px;
+    font-size: 0.76rem;
+  }
+
+  .home-stamp {
+    display: none;
+  }
+
+  .home-watermark {
+    right: 10px;
+    bottom: 30px;
+  }
+
+  .home-marquee {
+    height: 30px;
+  }
+
+  .home-marquee-item {
+    padding: 0 18px;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
   }
 }

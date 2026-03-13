@@ -2,37 +2,67 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { BootScreen } from "./components/boot/BootScreen";
 import { AboutPage } from "./components/pages/AboutPage";
 import { EventsPage } from "./components/pages/EventsPage";
+import { GalleryPage } from "./components/pages/GalleryPage";
 import { HomePage } from "./components/pages/HomePage";
 import { ModulesPage } from "./components/pages/ModulesPage";
+import { PartnersPage } from "./components/pages/PartnersPage";
+import { EpiloguePage } from "./components/pages/EpiloguePage";
 
-const PAGE_ORDER = ["home", "about", "modules", "events"];
+const PAGE_ORDER = ["home", "about", "modules", "events", "partners", "epilogue"];
+const BOOTED_KEY = "scaict:booted";
+const LAST_PAGE_KEY = "scaict:last-page";
+
+function getStoredPage() {
+  if (typeof window === "undefined") return "home";
+
+  const storedPage = window.sessionStorage.getItem(LAST_PAGE_KEY);
+  return PAGE_ORDER.includes(storedPage) ? storedPage : "home";
+}
 
 export default function App() {
-  const [booting, setBooting] = useState(true);
-  const [currentPage, setCurrentPage] = useState("home");
+  const isGalleryRoute = typeof window !== "undefined" && window.location.pathname.startsWith("/gallery/");
+  const [booting, setBooting] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.sessionStorage.getItem(BOOTED_KEY) !== "1";
+  });
+  const [currentPage, setCurrentPage] = useState(getStoredPage);
   const [exitingPage, setExitingPage] = useState(null);
+  const [navDir, setNavDir] = useState("forward"); // "forward" | "backward"
+  const [flash, setFlash] = useState(false);
+  const [visitKeys, setVisitKeys] = useState({ home: 0, about: 0, modules: 0, events: 0, partners: 0, epilogue: 0 });
   const phaseRef = useRef("idle"); // "idle" | "transitioning"
 
-  const handleBootDone = useCallback(() => setBooting(false), []);
+  const handleBootDone = useCallback(() => {
+    setBooting(false);
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(BOOTED_KEY, "1");
+      window.sessionStorage.setItem(LAST_PAGE_KEY, "home");
+    }
+  }, []);
 
   const navigate = useCallback((nextPage) => {
     if (phaseRef.current !== "idle" || nextPage === currentPage) return;
     phaseRef.current = "transitioning";
 
+    const fromIdx = PAGE_ORDER.indexOf(currentPage);
+    const toIdx   = PAGE_ORDER.indexOf(nextPage);
+    const dir = toIdx >= fromIdx ? "forward" : "backward";
+    setNavDir(dir);
+    setFlash(true);
     setExitingPage(currentPage);
 
-    // 舊頁面 exit 動畫跑完後換頁
+    // 舊頁面 exit（380ms）後切入新頁
     setTimeout(() => {
       setExitingPage(null);
       setCurrentPage(nextPage);
-      // enter 動畫跑完後回 idle
-      setTimeout(() => {
-        phaseRef.current = "idle";
-      }, 500);
-    }, 340);
+      // 每次導航都讓目標頁 remount，確保進場動畫重新執行
+      setVisitKeys((prev) => ({ ...prev, [nextPage]: prev[nextPage] + 1 }));
+      setTimeout(() => setFlash(false), 180);
+      setTimeout(() => { phaseRef.current = "idle"; }, 560);
+    }, 380);
   }, [currentPage]);
 
-  // 滾輪換頁
+  // 滾輪換頁（只在頁面滾到頂/底時才換頁）
   useEffect(() => {
     if (booting) return;
 
@@ -42,9 +72,23 @@ export default function App() {
     const handleWheel = (e) => {
       if (phaseRef.current !== "idle") return;
 
+      const el = e.target.closest(".page-view.active");
+      const scrollEl = el ?? document.documentElement;
+      const atTop    = scrollEl.scrollTop <= 0;
+      const atBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 1;
+
+      const goingDown = e.deltaY > 0;
+      const goingUp   = e.deltaY < 0;
+
+      // 只有在邊界時才累積
+      if ((goingDown && !atBottom) || (goingUp && !atTop)) {
+        wheelAccum = 0;
+        return;
+      }
+
       wheelAccum += e.deltaY;
       clearTimeout(wheelTimer);
-      wheelTimer = setTimeout(() => { wheelAccum = 0; }, 200);
+      wheelTimer = setTimeout(() => { wheelAccum = 0; }, 300);
 
       if (Math.abs(wheelAccum) < 80) return;
 
@@ -62,12 +106,15 @@ export default function App() {
     return () => window.removeEventListener("wheel", handleWheel);
   }, [booting, currentPage, navigate]);
 
-  const pageComponents = {
-    home: <HomePage onNavigate={navigate} />,
-    about: <AboutPage />,
-    modules: <ModulesPage />,
-    events: <EventsPage />,
-  };
+  useEffect(() => {
+    if (typeof window === "undefined" || booting) return;
+    window.sessionStorage.setItem(BOOTED_KEY, "1");
+    window.sessionStorage.setItem(LAST_PAGE_KEY, currentPage);
+  }, [booting, currentPage]);
+
+  if (isGalleryRoute) {
+    return <GalleryPage />;
+  }
 
   return (
     <>
@@ -81,19 +128,30 @@ export default function App() {
             </button>
           )}
 
+          {flash && <div className="nav-flash" />}
+
           {PAGE_ORDER.map((id) => {
-            const isExiting = exitingPage === id;
+            const isExiting  = exitingPage === id;
             const isEntering = currentPage === id && exitingPage !== null;
-            const isActive = currentPage === id && exitingPage === null;
+            const isActive   = currentPage === id && exitingPage === null;
 
             let cls = "page-view";
-            if (isExiting) cls += " exiting";
-            else if (isEntering) cls += " entering";
-            else if (isActive) cls += " active";
+            if (isExiting)       cls += ` exiting nav-${navDir}`;
+            else if (isEntering) cls += ` entering nav-${navDir}`;
+            else if (isActive)   cls += " active";
+
+            const pageProps = { isExiting, navDir };
+
+            const pageNode = id === "home"     ? <HomePage     key={visitKeys.home}     onNavigate={navigate} {...pageProps} />
+                           : id === "about"    ? <AboutPage    key={visitKeys.about}    {...pageProps} />
+                           : id === "modules"  ? <ModulesPage  key={visitKeys.modules}  onNavigate={navigate} {...pageProps} />
+                           : id === "events"   ? <EventsPage   key={visitKeys.events}   {...pageProps} />
+                           : id === "partners"  ? <PartnersPage key={visitKeys.partners} {...pageProps} />
+                           :                     <EpiloguePage key={visitKeys.epilogue} {...pageProps} />;
 
             return (
               <div key={id} className={cls}>
-                {pageComponents[id]}
+                {pageNode}
               </div>
             );
           })}

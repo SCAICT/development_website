@@ -1,12 +1,19 @@
-export function AboutPage() {
+import { usePageAnim } from "../shared/usePageAnim";
+
+export function AboutPage({ isExiting, navDir }) {
+  const { anim } = usePageAnim(isExiting, navDir);
+
   return (
     <div className="zine-grid" style={{ paddingTop: "3rem", paddingBottom: "6rem" }}>
+
+      {/* 標題 */}
       <div
         style={{
           gridColumn: "1 / -1",
           borderBottom: "6px solid var(--zine-mid)",
           paddingBottom: "1.5rem",
-          marginBottom: "2rem"
+          marginBottom: "2rem",
+          ...anim(0, 180),
         }}
       >
         <h1
@@ -16,47 +23,35 @@ export function AboutPage() {
             lineHeight: 0.9,
             margin: 0,
             display: "flex",
-            flexDirection: "column"
+            flexDirection: "column",
           }}
         >
-          <span>THE</span>
+          <span>WHO</span>
           <span
             className="cutout-rose"
-            style={{
-              display: "inline-block",
-              width: "max-content",
-              padding: "0 20px",
-              transform: "rotate(-1.5deg)"
-            }}
+            style={{ display: "inline-block", width: "max-content", padding: "0 20px", transform: "rotate(-1.5deg)" }}
           >
-            REVOLUTION
+            AMONG US
           </span>
         </h1>
       </div>
 
-      <div style={{ gridColumn: "1 / 8", fontFamily: "var(--mono)", fontSize: 14, lineHeight: 2 }}>
+      {/* 左欄：文字 */}
+      <div style={{ gridColumn: "1 / 8", fontFamily: "var(--mono)", fontSize: 14, lineHeight: 2, ...anim(70, 130) }}>
         <div
           style={{
             padding: "20px 24px",
             border: "2px dashed rgba(200,191,176,0.25)",
             background: "rgba(42,38,32,0.5)",
-            marginBottom: 24
+            marginBottom: 24,
           }}
         >
           <p>SCAICT 是一個由全台高中職生自主發起的資訊社群。</p>
           <br />
           <p>
             頂尖的程式資源與技術交流，往往侷限於少數明星學校。
-            <span
-              style={{
-                background: "var(--cream)",
-                color: "var(--coal)",
-                padding: "0 4px",
-                fontWeight: 700
-              }}
-            >
-              {" "}
-              我們認為這是不合理的。
+            <span style={{ background: "var(--cream)", color: "var(--coal)", padding: "0 4px", fontWeight: 700 }}>
+              {" "}我們認為這是不合理的。
             </span>
           </p>
         </div>
@@ -76,7 +71,7 @@ export function AboutPage() {
                 color: ["var(--rose)", "var(--sage)", "var(--slate)", "var(--sand)"][index],
                 padding: "4px 12px",
                 transform: `rotate(${[-2, 1.5, -1, 2][index]}deg)`,
-                display: "inline-block"
+                display: "inline-block",
               }}
             >
               {tag}
@@ -85,13 +80,15 @@ export function AboutPage() {
         </div>
       </div>
 
+      {/* 右欄：照片 */}
       <div
         style={{
           gridColumn: "8 / -1",
           display: "flex",
           justifyContent: "center",
           alignItems: "flex-start",
-          paddingTop: 16
+          paddingTop: 16,
+          ...anim(140, 80),
         }}
       >
         <div className="punk-img" style={{ transform: "rotate(2deg)" }}>
@@ -103,13 +100,9 @@ export function AboutPage() {
           <div
             className="tape"
             style={{
-              top: "50%",
-              left: 0,
-              right: 0,
+              top: "50%", left: 0, right: 0,
               transform: "translateY(-50%) rotate(10deg)",
-              textAlign: "center",
-              fontSize: "1rem",
-              padding: "4px 0"
+              textAlign: "center", fontSize: "1rem", padding: "4px 0",
             }}
           >
             CLASSIFIED
@@ -117,48 +110,25 @@ export function AboutPage() {
         </div>
       </div>
 
-      <div style={{ gridColumn: "1 / 6", marginTop: 48 }}>
+      {/* 左下：Terminal */}
+      <div style={{ gridColumn: "1 / 6", marginTop: 48, ...anim(200, 40) }}>
         <div style={{ border: "1px solid var(--border-light)", background: "var(--bg2)" }}>
-          <div
-            style={{
-              padding: "10px 16px",
-              borderBottom: "1px solid var(--border)",
-              display: "flex",
-              gap: 8,
-              alignItems: "center"
-            }}
-          >
+          <div style={{ padding: "10px 16px", borderBottom: "1px solid var(--border)", display: "flex", gap: 8, alignItems: "center" }}>
             {["#c4998a", "#c9b89a", "#8a9e8c"].map((color) => (
               <div key={color} style={{ width: 10, height: 10, borderRadius: "50%", background: color }} />
             ))}
-            <span
-              style={{
-                fontFamily: "var(--mono)",
-                fontSize: 9,
-                color: "var(--text-faint)",
-                marginLeft: 8
-              }}
-            >
+            <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--text-faint)", marginLeft: 8 }}>
               scaict_info.sh
             </span>
           </div>
-
-          <div
-            style={{
-              padding: "20px",
-              fontFamily: "var(--mono)",
-              fontSize: 12,
-              lineHeight: 2.4,
-              color: "var(--text-dim)"
-            }}
-          >
+          <div style={{ padding: "20px", fontFamily: "var(--mono)", fontSize: 12, lineHeight: 2.4, color: "var(--text-dim)" }}>
             {[
-              ["$", "org", "SCAICT"],
+              ["$", "org",      "SCAICT"],
               ["$", "location", "Central Taiwan"],
-              ["$", "founded", "2021"],
-              ["$", "type", "Student Community"],
-              ["$", "status", <span style={{ color: "var(--sage)" }}>● ACTIVE</span>],
-              ["$", "members", <span style={{ color: "var(--rose)" }}>500+ students</span>]
+              ["$", "founded",  "2021"],
+              ["$", "type",     "Student Community"],
+              ["$", "status",   <span key="s" style={{ color: "var(--sage)" }}>● ACTIVE</span>],
+              ["$", "members",  <span key="m" style={{ color: "var(--rose)" }}>500+ students</span>],
             ].map(([prompt, cmd, value], index) => (
               <div key={index} style={{ display: "flex", gap: 12 }}>
                 <span style={{ color: "var(--rose)" }}>{prompt}</span>
@@ -179,44 +149,28 @@ export function AboutPage() {
         </div>
       </div>
 
+      {/* 右下：Sponsors */}
       <div
         style={{
           gridColumn: "7 / -1",
           marginTop: 48,
           padding: "24px 28px",
           border: "2px solid var(--border-light)",
-          background: "rgba(42,38,32,0.4)"
+          background: "rgba(42,38,32,0.4)",
+          ...anim(260, 0),
         }}
       >
-        <div
-          style={{
-            fontFamily: "var(--mono)",
-            fontSize: 9,
-            letterSpacing: 3,
-            color: "var(--ash)",
-            marginBottom: 16
-          }}
-        >
+        <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: 3, color: "var(--ash)", marginBottom: 16 }}>
           TRUSTED BY
         </div>
-
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {[
-            ["PREMIUM", "var(--rose)", "AIS3 / DEVCORE"],
+            ["PREMIUM", "var(--rose)",  "AIS3 / DEVCORE"],
             ["SPONSOR", "var(--slate)", "NCSE NETWORK"],
-            ["PARTNER", "var(--sage)", "OCF 開放文化基金會"]
+            ["PARTNER", "var(--sage)",  "OCF 開放文化基金會"],
           ].map(([tier, color, name]) => (
             <div key={tier} style={{ display: "flex", gap: 16, alignItems: "center" }}>
-              <span
-                style={{
-                  fontFamily: "var(--mono)",
-                  fontSize: 9,
-                  letterSpacing: 2,
-                  padding: "3px 10px",
-                  border: `1px solid ${color}`,
-                  color
-                }}
-              >
+              <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: 2, padding: "3px 10px", border: `1px solid ${color}`, color }}>
                 {tier}
               </span>
               <span style={{ fontFamily: "var(--sans)", fontSize: 13, color: "var(--text-dim)" }}>
@@ -226,6 +180,7 @@ export function AboutPage() {
           ))}
         </div>
       </div>
+
     </div>
   );
 }

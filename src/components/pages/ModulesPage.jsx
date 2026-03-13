@@ -1,40 +1,16 @@
 import { useState } from "react";
+import { usePageAnim } from "../shared/usePageAnim";
+import { MODULES } from "../../constants/events";
 
-const modules = [
-  {
-    id: "01",
-    en: "ANNUAL\nCONFERENCE",
-    zh: "年度計算機大會",
-    color: "var(--rose)",
-    bg: "rgba(196,153,138,0.06)",
-    desc: "專屬於中學生的超大型技術年會。邀請業界頂尖講者帶來最前沿的技術沙龍，並提供學生發表專案的絕佳舞台。",
-    tags: ["KEYNOTE", "WORKSHOP", "SHOWCASE"]
-  },
-  {
-    id: "02",
-    en: "TECH\nBOOTCAMPS",
-    zh: "實戰技術營隊",
-    color: "var(--slate)",
-    bg: "rgba(122,143,160,0.06)",
-    desc: "從 InforCamp 寒暑假培訓營到週末技術工作坊。涵蓋網頁開發、演算法基礎到資安攻防，手把手帶領新手跨過門檻。",
-    tags: ["WEB_DEV", "ALGORITHM", "SECURITY"]
-  },
-  {
-    id: "03",
-    en: "COMMUNITY\nNETWORK",
-    zh: "跨校社群串聯",
-    color: "var(--sage)",
-    bg: "rgba(138,158,140,0.06)",
-    desc: "孤軍奮戰太孤單。我們建立龐大的全台學生交流網絡，讓有想法的 Side Project 在這裡找到共同開發者。",
-    tags: ["OPEN_SOURCE", "COLLAB", "NETWORK"]
-  }
-];
-
-export function ModulesPage() {
+export function ModulesPage({ isExiting, navDir, onNavigate }) {
+  const { anim } = usePageAnim(isExiting, navDir);
   const [hovered, setHovered] = useState(null);
+  const featuredSignupEvent = MODULES.find((event) => event.status === "UPCOMING") ?? MODULES[0];
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", paddingTop: "3rem", paddingBottom: "6rem" }}>
+
+      {/* 徽章 */}
       <div
         style={{
           fontFamily: "var(--mono)",
@@ -44,28 +20,128 @@ export function ModulesPage() {
           padding: "4px 12px",
           display: "inline-block",
           marginBottom: 40,
-          border: "1.5px solid var(--coal)"
+          border: "1.5px solid var(--coal)",
+          ...anim(0, 150),
         }}
       >
         [ SYS_MODULES_LOADED ]
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-        {modules.map((module) => (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 0.9fr)",
+          gap: 40,
+          marginBottom: 68,
+          alignItems: "end",
+          ...anim(25, 120),
+        }}
+      >
+        <div style={{ position: "relative" }}>
           <div
-            key={module.id}
+            aria-hidden="true"
             style={{
+              position: "absolute",
+              top: -34,
+              left: -6,
+              fontFamily: "var(--head)",
+              fontSize: "clamp(56px, 8vw, 120px)",
+              lineHeight: 0.9,
+              color: "transparent",
+              WebkitTextStroke: "1px rgba(212, 169, 106, 0.14)",
+              letterSpacing: "0.04em",
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+          >
+            EVENTS
+          </div>
+          <div
+            style={{
+              fontFamily: "var(--mono)",
+              fontSize: 13,
+              letterSpacing: 2.4,
+              color: "var(--sand)",
+              marginBottom: 14,
+            }}
+          >
+            FEATURED EVENTS DOSSIER
+          </div>
+          <h1
+            style={{
+              fontFamily: "var(--head)",
+              fontSize: "clamp(48px, 6vw, 92px)",
+              lineHeight: 0.95,
+              color: "var(--text)",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            EVENTS
+          </h1>
+          <div
+            style={{
+              marginTop: 14,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 12,
+              alignItems: "center",
+              fontFamily: "var(--mono)",
+              fontSize: 11,
+              letterSpacing: 1.8,
+              color: "var(--text-faint)",
+            }}
+          >
+            <span style={{ padding: "4px 8px", border: "1px solid rgba(212, 169, 106, 0.35)", color: "var(--sand)" }}>
+              ISSUE 03
+            </span>
+            <span>EDITORIAL SELECT</span>
+            <span style={{ color: "var(--sand)" }}>●</span>
+            <span>SCAICT PROGRAM INDEX</span>
+          </div>
+        </div>
+        <p
+          style={{
+            fontFamily: "var(--sans)",
+            fontSize: 15,
+            lineHeight: 2,
+            color: "var(--text-dim)",
+            maxWidth: 420,
+            justifySelf: "end",
+          }}
+        >
+          這一頁不是抽象模組清單，而是正在發生與即將發生的活動編排。
+          我把它保留成雜誌式資訊頁，讓每個 event 同時像企劃條目，也像一期刊物裡的重點版面。
+        </p>
+      </div>
+
+      {/* 模組列表 */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+        {MODULES.map((module, i) => (
+          <button
+            key={module.id}
+            type="button"
+            style={{
+              display: "block",
               position: "relative",
               background: hovered === module.id ? module.bg : "rgba(33,30,26,0.6)",
-              border: `2px solid ${
-                hovered === module.id ? module.color : "rgba(200,191,176,0.15)"
-              }`,
-              padding: "32px 48px 32px 80px",
-              cursor: "none",
-              transition: "all 0.2s steps(3)"
+              border: `2px solid ${hovered === module.id ? module.color : "rgba(200,191,176,0.15)"}`,
+              padding: "40px 48px 40px 88px",
+              textAlign: "left",
+              width: "100%",
+              transition: "background 0.2s steps(3), border-color 0.2s steps(3)",
+              ...anim(60 + i * 70, 90 - i * 25),
             }}
             onMouseEnter={() => setHovered(module.id)}
             onMouseLeave={() => setHovered(null)}
+            onClick={() => {
+              if (module.actionType === "internal-gallery") {
+                window.location.href = module.actionHref;
+                return;
+              }
+
+              window.open(module.actionHref, "_blank", "noopener,noreferrer");
+            }}
           >
             <div
               style={{
@@ -75,13 +151,11 @@ export function ModulesPage() {
                 fontFamily: "var(--head)",
                 fontSize: 88,
                 color: "transparent",
-                WebkitTextStroke: `2px ${
-                  hovered === module.id ? module.color : "rgba(200,191,176,0.2)"
-                }`,
+                WebkitTextStroke: `2px ${hovered === module.id ? module.color : "rgba(200,191,176,0.2)"}`,
                 lineHeight: 1,
                 transition: "all 0.2s steps(3)",
                 transform: "rotate(-3deg)",
-                pointerEvents: "none"
+                pointerEvents: "none",
               }}
             >
               {module.id}
@@ -89,12 +163,39 @@ export function ModulesPage() {
 
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 32,
-                alignItems: "start"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 20,
+                marginBottom: 24,
+                paddingBottom: 16,
+                borderBottom: `1px solid ${hovered === module.id ? module.color : "rgba(200,191,176,0.12)"}`,
               }}
             >
+              <div style={{ fontFamily: "var(--mono)", fontSize: 12, letterSpacing: 2.2, color: module.color }}>
+                {module.label} / {module.status}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: "flex-end",
+                  gap: 10,
+                  fontFamily: "var(--mono)",
+                  fontSize: 11,
+                  letterSpacing: 1.6,
+                  color: "var(--text-faint)",
+                }}
+              >
+                <span>{module.dateRange}</span>
+                <span style={{ color: module.color }}>●</span>
+                <span>{module.schedule}</span>
+                <span style={{ color: module.color }}>●</span>
+                <span>{module.format}</span>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "start" }}>
               <div>
                 <h2
                   style={{
@@ -103,27 +204,18 @@ export function ModulesPage() {
                     whiteSpace: "pre-line",
                     lineHeight: 1.1,
                     marginBottom: 8,
-                    background: hovered === module.id ? module.color : "transparent",
+                    background: hovered === module.id ? module.color : "rgba(0,0,0,0)",
                     color: hovered === module.id ? "var(--coal)" : "var(--text)",
                     display: "inline-block",
-                    padding: hovered === module.id ? "0 8px" : "0",
-                    transition: "all 0.1s steps(2)"
+                    padding: "0 8px",
+                    transition: "all 0.1s steps(2)",
                   }}
                 >
-                  {module.en}
+                  {module.title}
                 </h2>
-                <div
-                  style={{
-                    fontFamily: "var(--mono)",
-                    fontSize: 14,
-                    color: module.color,
-                    letterSpacing: 2,
-                    marginTop: 4
-                  }}
-                >
-                  &gt;&gt; {module.zh}
+                <div style={{ fontFamily: "var(--mono)", fontSize: 14, color: module.color, letterSpacing: 2, marginTop: 4 }}>
+                  &gt;&gt; {module.subtitle}
                 </div>
-
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 20 }}>
                   {module.tags.map((tag) => (
                     <span
@@ -133,11 +225,9 @@ export function ModulesPage() {
                         fontSize: 13,
                         letterSpacing: 1.5,
                         padding: "3px 10px",
-                        border: `1px solid ${
-                          hovered === module.id ? module.color : "var(--border)"
-                        }`,
+                        border: `1px solid ${hovered === module.id ? module.color : "var(--border)"}`,
                         color: hovered === module.id ? module.color : "var(--text-faint)",
-                        transition: "all 0.1s steps(2)"
+                        transition: "all 0.1s steps(2)",
                       }}
                     >
                       {tag}
@@ -145,23 +235,39 @@ export function ModulesPage() {
                   ))}
                 </div>
               </div>
-
-              <p
-                style={{
-                  fontFamily: "var(--sans)",
-                  fontSize: 14,
-                  lineHeight: 2,
-                  color: "var(--text-dim)",
-                  marginTop: 4
-                }}
-              >
-                {module.desc}
-              </p>
+              <div>
+                <div
+                  style={{
+                    fontFamily: "var(--mono)",
+                    fontSize: 12,
+                    letterSpacing: 2,
+                    color: "var(--text-faint)",
+                    marginBottom: 12,
+                  }}
+                >
+                  ACTIVE PROGRAM BRIEF
+                </div>
+                <p style={{ fontFamily: "var(--sans)", fontSize: 14, lineHeight: 2, color: "var(--text-dim)", marginTop: 4 }}>
+                  {module.description}
+                </p>
+                <div
+                  style={{
+                    marginTop: 20,
+                    fontFamily: "var(--mono)",
+                    fontSize: 12,
+                    letterSpacing: 2,
+                    color: module.color,
+                  }}
+                >
+                  {module.actionLabel} →
+                </div>
+              </div>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
+      {/* CTA */}
       <div
         style={{
           marginTop: 48,
@@ -169,27 +275,22 @@ export function ModulesPage() {
           border: "2px dashed rgba(196,153,138,0.3)",
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center"
+          alignItems: "center",
+          ...anim(280, 0),
         }}
       >
         <div>
           <div style={{ fontFamily: "var(--head)", fontSize: 28, color: "var(--rose)" }}>
             YOU ARE THE MISSING PIECE
           </div>
-          <div
-            style={{
-              fontFamily: "var(--mono)",
-              fontSize: 14,
-              color: "var(--text-faint)",
-              marginTop: 6
-            }}
-          >
-            電池還缺你一個 — 立即加入我們
+          <div style={{ fontFamily: "var(--mono)", fontSize: 14, color: "var(--text-faint)", marginTop: 6 }}>
+            {featuredSignupEvent
+              ? `${featuredSignupEvent.title.replace(/\n/g, " ")} 差你一個 — 點擊去報名`
+              : "最新活動差你一個 — 點擊去報名"}
           </div>
         </div>
-
         <a
-          href="https://docs.google.com/forms/d/1z0w7kQtNb30YG9nXQZEUM1WEZ1CTA52rcvi-X9L04-U"
+          href={featuredSignupEvent?.status === "UPCOMING" ? featuredSignupEvent.actionHref : featuredSignupEvent?.signupUrl ?? featuredSignupEvent?.actionHref ?? "#"}
           target="_blank"
           rel="noreferrer"
           style={{
@@ -201,14 +302,14 @@ export function ModulesPage() {
             background: "var(--rose)",
             color: "var(--coal)",
             border: "2px solid var(--coal)",
-            cursor: "none",
             boxShadow: "4px 4px 0 var(--coal)",
-            display: "inline-block"
+            display: "inline-block",
           }}
         >
-          APPLY_NOW →
+          REGISTER_NOW →
         </a>
       </div>
+
     </div>
   );
 }

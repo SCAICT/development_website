@@ -17,12 +17,12 @@ export function EdgeNav({ onNavigate }) {
         <div className="nav-tape-date">2026 · SPRING ISSUE</div>
       </button>
 
-      <button className="edge-nav nav-torn" onClick={() => onNavigate("modules")} aria-label="社群模組 — Modules">
+      <button className="edge-nav nav-torn" onClick={() => onNavigate("modules")} aria-label="活動專題 — Events">
         <div className="nav-torn-index">03</div>
         <div className="nav-torn-divider" />
         <div className="nav-torn-body">
-          <div className="nav-torn-label">MODULES</div>
-          <div className="nav-torn-meta">SYSTEM OVERVIEW · scaict.org</div>
+          <div className="nav-torn-label">EVENTS</div>
+          <div className="nav-torn-meta">FEATURED DOSSIER · scaict.org</div>
         </div>
       </button>
 
@@ -31,6 +31,14 @@ export function EdgeNav({ onNavigate }) {
         <div className="nav-alert-stack">
           <div className="nav-alert-issue">ARCHIVE · ISSUE 05</div>
           <div className="nav-alert-label">LOGS</div>
+        </div>
+      </button>
+
+      <button className="edge-nav nav-network" onClick={() => onNavigate("partners")} aria-label="贊助與合作社團 — Network">
+        <div className="nav-network-num">05</div>
+        <div className="nav-network-stack">
+          <div className="nav-network-issue">SPONSORS · CLUBS</div>
+          <div className="nav-network-label">NETWORK</div>
         </div>
       </button>
     </>
