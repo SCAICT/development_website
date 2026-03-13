@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { usePageAnim } from "../shared/usePageAnim";
+import { useIsMobile } from "../shared/useIsMobile";
 import { parseFrontmatter } from "../../utils/parseFrontmatter";
 
 // ── data ─────────────────────────────────────────────────────────────────
@@ -83,7 +84,7 @@ function LogoField({ logo, name, accent, width, height }) {
 }
 
 // ── PREMIUM — full-width feature block ───────────────────────────────────
-function PremiumBlock({ sponsor, style }) {
+function PremiumBlock({ sponsor, style, isMobile }) {
   const [hov, setHov] = useState(false);
   const accent = ACCENT_MAP[sponsor.accent] ?? "var(--ash)";
   const href = resolveExternalLink(sponsor);
@@ -96,7 +97,7 @@ function PremiumBlock({ sponsor, style }) {
       <div style={{
         position:"relative",
         display:"grid",
-        gridTemplateColumns:"280px 1fr",
+        gridTemplateColumns:isMobile ? "1fr" : "280px 1fr",
         border:`2px solid ${hov ? accent : "rgba(200,191,176,0.18)"}`,
         background: hov
           ? `linear-gradient(90deg, rgba(10,9,16,0.98), ${accent}0d 100%)`
@@ -106,12 +107,14 @@ function PremiumBlock({ sponsor, style }) {
       }}>
         {/* 左：logo area */}
         <div style={{ borderRight:`2px solid ${hov ? accent : "rgba(200,191,176,0.1)"}`,
+          borderRightWidth: isMobile ? 0 : 2,
+          borderBottom: isMobile ? `2px solid ${hov ? accent : "rgba(200,191,176,0.1)"}` : undefined,
           transition:"border-color 0.12s steps(2)" }}>
-          <LogoField logo={sponsor.logo} name={sponsor.name} accent={accent} width={280} height={200} />
+          <LogoField logo={sponsor.logo} name={sponsor.name} accent={accent} width={isMobile ? "100%" : 280} height={200} />
         </div>
 
         {/* 右：content */}
-        <div style={{ padding:"28px 32px", display:"flex", flexDirection:"column", justifyContent:"space-between" }}>
+        <div style={{ padding:isMobile ? "18px 16px" : "28px 32px", display:"flex", flexDirection:"column", justifyContent:"space-between" }}>
           <div>
             {/* tier + index */}
             <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:20 }}>
@@ -128,7 +131,7 @@ function PremiumBlock({ sponsor, style }) {
             {/* name */}
             <div style={{
               fontFamily:"var(--head)",
-              fontSize:"clamp(32px,4vw,56px)",
+              fontSize:isMobile ? "clamp(24px,8vw,34px)" : "clamp(32px,4vw,56px)",
               lineHeight:0.92,
               color: hov ? accent : "var(--text)",
               transition:"color 0.1s steps(2)",
@@ -139,7 +142,7 @@ function PremiumBlock({ sponsor, style }) {
             </div>
 
             {sponsor.description && (
-              <div style={{ fontFamily:"var(--mono)", fontSize:12, lineHeight:1.9,
+              <div style={{ fontFamily:"var(--mono)", fontSize:isMobile ? 11 : 12, lineHeight:1.9,
                 color:"var(--text-dim)", maxWidth:380 }}>
                 {sponsor.description}
               </div>
@@ -216,7 +219,7 @@ function TieredBlock({ sponsor, globalIndex, style }) {
 }
 
 // ── Club stamp card ───────────────────────────────────────────────────────
-function ClubStamp({ club, index, style }) {
+function ClubStamp({ club, index, style, isMobile }) {
   const [hov, setHov] = useState(false);
   const color = CLUB_COLORS[index % CLUB_COLORS.length];
   const rot = ([-1.2, 0.9, -0.5, 1.4, -1, 0.6][index % 6]);
@@ -234,15 +237,15 @@ function ClubStamp({ club, index, style }) {
       {href
         ? <a href={href} target="_blank" rel="noreferrer"
             style={{ textDecoration:"none", color:"inherit", display:"block" }}>
-            <StampInner club={club} color={color} hov={hov} />
+            <StampInner club={club} color={color} hov={hov} isMobile={isMobile} />
           </a>
-        : <StampInner club={club} color={color} hov={hov} />
+        : <StampInner club={club} color={color} hov={hov} isMobile={isMobile} />
       }
     </div>
   );
 }
 
-function StampInner({ club, color, hov }) {
+function StampInner({ club, color, hov, isMobile }) {
   return (
     <div style={{
       border:`2px solid ${hov ? color : "rgba(200,191,176,0.22)"}`,
@@ -256,7 +259,7 @@ function StampInner({ club, color, hov }) {
         borderBottom:`1px solid ${hov ? color : "rgba(200,191,176,0.1)"}`,
         transition:"border-color 0.12s steps(2)",
       }}>
-        <LogoField logo={club.logo} name={club.name} accent={color} width="100%" height={138} />
+        <LogoField logo={club.logo} name={club.name} accent={color} width="100%" height={isMobile ? 120 : 138} />
 
         {/* 角標 */}
         <div aria-hidden style={{
@@ -269,12 +272,12 @@ function StampInner({ club, color, hov }) {
       </div>
 
       {/* footer */}
-      <div style={{ padding:"14px 16px 16px" }}>
+      <div style={{ padding:isMobile ? "12px 12px 14px" : "14px 16px 16px" }}>
         <div style={{ fontFamily:"var(--mono)", fontSize:9, letterSpacing:2.3,
           color:color, marginBottom:8 }}>
           {club.id} · {club.region}
         </div>
-        <div style={{ fontFamily:"var(--sans)", fontSize:16, fontWeight:700,
+        <div style={{ fontFamily:"var(--sans)", fontSize:isMobile ? 14 : 16, fontWeight:700,
           lineHeight:1.5, color:"var(--text)" }}>
           {club.name}
         </div>
@@ -286,6 +289,7 @@ function StampInner({ club, color, hov }) {
 // ── Page ─────────────────────────────────────────────────────────────────
 export function PartnersPage({ isExiting, navDir }) {
   const { anim } = usePageAnim(isExiting, navDir);
+  const isMobile = useIsMobile();
 
   const sponsors = useMemo(() => loadEntries(rawSponsors), []);
   const clubs    = useMemo(() => loadEntries(rawClubs),    []);
@@ -295,36 +299,36 @@ export function PartnersPage({ isExiting, navDir }) {
   const others   = sponsors.filter((s) => s.tier !== "PREMIUM");
 
   return (
-    <div style={{ maxWidth: 1080, margin: "0 auto", paddingTop: "3rem", paddingBottom: "7rem" }}>
+    <div style={{ maxWidth: 1080, margin: "0 auto", paddingTop: "3rem", paddingBottom: isMobile ? "4rem" : "7rem" }}>
 
       {/* ── HEADER ── */}
-      <div style={{ marginBottom: 64, ...anim(0, 160) }}>
+      <div style={{ marginBottom: isMobile ? 40 : 64, ...anim(0, 160) }}>
         {/* 頂部細線 */}
-        <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:32 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:isMobile ? 20 : 32 }}>
           <div style={{ flex:1, height:1, background:"var(--border-light)" }} />
-          <span style={{ fontFamily:"var(--mono)", fontSize:9, letterSpacing:4, color:"var(--text-faint)" }}>
+          <span style={{ fontFamily:"var(--mono)", fontSize:isMobile ? 8 : 9, letterSpacing:isMobile ? 2.4 : 4, color:"var(--text-faint)" }}>
             SCAICT · ALLIES · VOL.01
           </span>
           <div style={{ flex:1, height:1, background:"var(--border-light)" }} />
         </div>
 
         {/* 主標 */}
-        <div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", gap:24 }}>
-          <h1 style={{ fontFamily:"var(--head)", fontSize:"clamp(48px,8vw,108px)",
+        <div style={{ display:"flex", alignItems:isMobile ? "flex-start" : "flex-end", flexDirection:isMobile ? "column" : "row", justifyContent:"space-between", gap:isMobile ? 14 : 24 }}>
+          <h1 style={{ fontFamily:"var(--head)", fontSize:isMobile ? "clamp(40px,14vw,66px)" : "clamp(48px,8vw,108px)",
             lineHeight:0.84, margin:0, letterSpacing:"-0.02em" }}>
             <span style={{ display:"block", color:"var(--text)" }}>THOSE</span>
             <span style={{ display:"inline-block", color:"transparent",
               WebkitTextStroke:"2px var(--zine-mid)", transform:"translateX(4px)" }}>WHO</span>
             <span style={{ display:"block" }}>
               <span style={{ background:"var(--rose)", color:"var(--coal)",
-                padding:"0 18px", display:"inline-block", transform:"rotate(-0.8deg)" }}>
+                padding:isMobile ? "0 12px" : "0 18px", display:"inline-block", transform:"rotate(-0.8deg)" }}>
                 BACK US
               </span>
             </span>
           </h1>
 
-          <div style={{ paddingBottom:8, textAlign:"right" }}>
-            <div style={{ fontFamily:"var(--mono)", fontSize:11, color:"var(--text-faint)",
+          <div style={{ paddingBottom:8, textAlign:isMobile ? "left" : "right" }}>
+            <div style={{ fontFamily:"var(--mono)", fontSize:isMobile ? 10 : 11, color:"var(--text-faint)",
               letterSpacing:2, lineHeight:2.4 }}>
               <span style={{ color:"var(--rose)" }}>●</span> {sponsors.length} SPONSORS<br />
               <span style={{ color:"var(--slate)" }}>●</span> {clubs.length} ALLIED CLUBS
@@ -343,25 +347,25 @@ export function PartnersPage({ isExiting, navDir }) {
 
 
       {/* ── SPONSORS ── */}
-      <section style={{ marginBottom: 80 }}>
+      <section style={{ marginBottom: isMobile ? 48 : 80 }}>
 
         {/* section label */}
-        <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:28, ...anim(50, 120) }}>
+        <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:isMobile ? 20 : 28, ...anim(50, 120) }}>
           <span style={{ fontFamily:"var(--mono)", fontSize:8, letterSpacing:4, color:"var(--ash)",
             flexShrink:0 }}>01 / SPONSORS</span>
           <div style={{ flex:1, height:1, background:"var(--border)" }} />
-          <span style={{ fontFamily:"var(--head)", fontSize:10, letterSpacing:3,
+          <span style={{ fontFamily:"var(--head)", fontSize:isMobile ? 9 : 10, letterSpacing:3,
             color:"var(--text-faint)" }}>THOSE WHO MAKE IT POSSIBLE</span>
         </div>
 
         {/* PREMIUM */}
         {premiums.map((s, i) => (
-          <PremiumBlock key={s.name} sponsor={s} style={{ marginBottom:16, ...anim(70 + i*40, 100) }} />
+          <PremiumBlock key={s.name} sponsor={s} isMobile={isMobile} style={{ marginBottom:16, ...anim(70 + i*40, 100) }} />
         ))}
 
         {/* 其他 tier — 兩欄格 */}
         {others.length > 0 && (
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(2, minmax(0,1fr))",
+          <div style={{ display:"grid", gridTemplateColumns:isMobile ? "1fr" : "repeat(2, minmax(0,1fr))",
             gap:12, marginTop: premiums.length ? 12 : 0 }}>
             {others.map((s, i) => (
               <TieredBlock key={s.name} sponsor={s} globalIndex={premiums.length + i}
@@ -377,7 +381,7 @@ export function PartnersPage({ isExiting, navDir }) {
           rel="noreferrer"
           style={{
             marginTop:20,
-            padding:"18px 24px",
+            padding:isMobile ? "16px 16px" : "18px 24px",
             border:"1.5px dashed rgba(212,117,106,0.22)",
             display:"flex",
             alignItems:"center",
@@ -389,13 +393,13 @@ export function PartnersPage({ isExiting, navDir }) {
             ...anim(110 + sponsors.length * 35 + 20, 0),
           }}
         >
-          <div style={{ fontFamily:"var(--mono)", fontSize:12, color:"var(--text-faint)",
+          <div style={{ fontFamily:"var(--mono)", fontSize:isMobile ? 11 : 12, color:"var(--text-faint)",
             letterSpacing:1.5, lineHeight:2 }}>
-            <span style={{ color:"var(--rose)", display:"block", fontSize:12,
+            <span style={{ color:"var(--rose)", display:"block", fontSize:isMobile ? 11 : 12,
               letterSpacing:4, marginBottom:4 }}>BECOME A SPONSOR</span>
             想加入？歡迎透過社群管道聯絡我們。
           </div>
-          <span style={{ fontFamily:"var(--mono)", fontSize:10, letterSpacing:2,
+          <span style={{ fontFamily:"var(--mono)", fontSize:isMobile ? 9 : 10, letterSpacing:2,
             padding:"9px 22px", border:"1px solid var(--rose)", color:"var(--rose)",
             flexShrink:0 }}>
             CONTACT →
@@ -408,22 +412,22 @@ export function PartnersPage({ isExiting, navDir }) {
       <section>
 
         {/* section label */}
-        <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:32,
+        <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:isMobile ? 20 : 32,
           ...anim(200, 80) }}>
           <span style={{ fontFamily:"var(--mono)", fontSize:8, letterSpacing:4, color:"var(--ash)",
             flexShrink:0 }}>02 / ALLIED CLUBS</span>
           <div style={{ flex:1, height:1, background:"var(--border)" }} />
-          <span style={{ fontFamily:"var(--head)", fontSize:10, letterSpacing:3,
+          <span style={{ fontFamily:"var(--head)", fontSize:isMobile ? 9 : 10, letterSpacing:3,
             color:"var(--text-faint)" }}>UNITED WE HACK</span>
         </div>
 
         {/* stamp grid — 微旋轉的排列 */}
         <div style={{ display:"grid",
-          gridTemplateColumns:"repeat(auto-fill, minmax(220px, 1fr))",
-          gap:28, alignItems:"start" }}>
+          gridTemplateColumns:isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(auto-fill, minmax(220px, 1fr))",
+          gap:isMobile ? 14 : 28, alignItems:"start" }}>
           {clubs.map((club, i) => (
             <ClubStamp key={club.id ?? club.name} club={club} index={i}
-              style={anim(220 + i * 30, 60)} />
+              style={anim(220 + i * 30, 60)} isMobile={isMobile} />
           ))}
 
           {/* 申請空位 */}
@@ -431,7 +435,7 @@ export function PartnersPage({ isExiting, navDir }) {
             border:"1.5px dashed rgba(200,191,176,0.14)",
             display:"flex", flexDirection:"column",
             alignItems:"center", justifyContent:"center",
-            gap:10, aspectRatio:"1/1", minHeight:220,
+            gap:10, aspectRatio:"1/1", minHeight:isMobile ? 160 : 220,
             ...anim(220 + clubs.length * 30 + 20, 0),
           }}>
             <span style={{ fontFamily:"var(--head)", fontSize:36, color:"transparent",

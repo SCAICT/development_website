@@ -50,9 +50,13 @@ export function BootScreen({ onDone }) {
       </div>
 
       <div className="boot-right">
-        <pre className="boot-logo-ascii">{BOOT_ASCII}</pre>
-        <br />
-        <br />
+        <div className="boot-brand-block">
+          <div className="boot-mobile-wordmark">
+            <span className="boot-mobile-wordmark-main">SCAICT</span>
+            <span className="boot-mobile-wordmark-sub">STUDENT COMPUTING COLLECTIVE</span>
+          </div>
+          <pre className="boot-logo-ascii">{BOOT_ASCII}</pre>
+        </div>
         <img
           src={mascotImage}
           alt="SCAICT Mascot"

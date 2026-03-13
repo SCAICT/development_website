@@ -1,4 +1,4 @@
-export const BOOT_VERSION = "v3.4.18";
+export const BOOT_VERSION = "v4.2.16";
 
 export const BOOT_SEQUENCE = [
   { text: "", cls: "boot-log-dim", delay: 0 },

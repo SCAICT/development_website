@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BootScreen } from "./components/boot/BootScreen";
 import { AboutPage } from "./components/pages/AboutPage";
 import { EventsPage } from "./components/pages/EventsPage";
 import { GalleryPage } from "./components/pages/GalleryPage";
@@ -21,28 +20,13 @@ function getStoredPage() {
 
 export default function App() {
   const isGalleryRoute = typeof window !== "undefined" && window.location.pathname.startsWith("/gallery/");
-  const [booting, setBooting] = useState(() => {
-    if (typeof window === "undefined") return true;
-    const isReturningFromSubpage = window.sessionStorage.getItem(RETURN_TO_MAIN_KEY) === "1";
-    if (isReturningFromSubpage) {
-      window.sessionStorage.removeItem(RETURN_TO_MAIN_KEY);
-      return false;
-    }
-    return true;
-  });
+  const [booting] = useState(false);
   const [currentPage, setCurrentPage] = useState(getStoredPage);
   const [exitingPage, setExitingPage] = useState(null);
   const [navDir, setNavDir] = useState("forward"); // "forward" | "backward"
   const [flash, setFlash] = useState(false);
   const [visitKeys, setVisitKeys] = useState({ home: 0, about: 0, modules: 0, events: 0, partners: 0, epilogue: 0 });
   const phaseRef = useRef("idle"); // "idle" | "transitioning"
-
-  const handleBootDone = useCallback(() => {
-    setBooting(false);
-    if (typeof window !== "undefined") {
-      window.sessionStorage.setItem(LAST_PAGE_KEY, "home");
-    }
-  }, []);
 
   const navigate = useCallback((nextPage) => {
     if (phaseRef.current !== "idle" || nextPage === currentPage) return;
@@ -111,6 +95,70 @@ export default function App() {
   }, [booting, currentPage, navigate]);
 
   useEffect(() => {
+    if (booting) return;
+
+    let startY = null;
+    let startScrollTop = 0;
+    let activeScrollEl = null;
+
+    const handleTouchStart = (e) => {
+      if (phaseRef.current !== "idle") return;
+
+      const touch = e.touches?.[0];
+      if (!touch) return;
+
+      const el = e.target.closest(".page-view.active");
+      activeScrollEl = el ?? document.documentElement;
+      startY = touch.clientY;
+      startScrollTop = activeScrollEl.scrollTop;
+    };
+
+    const handleTouchEnd = (e) => {
+      if (phaseRef.current !== "idle" || startY === null || !activeScrollEl) {
+        startY = null;
+        activeScrollEl = null;
+        return;
+      }
+
+      const touch = e.changedTouches?.[0];
+      if (!touch) return;
+
+      const deltaY = touch.clientY - startY;
+      const moved = Math.abs(deltaY);
+      const currentScrollTop = activeScrollEl.scrollTop;
+      const atTop = currentScrollTop <= 0 && startScrollTop <= 0;
+      const atBottom =
+        currentScrollTop + activeScrollEl.clientHeight >= activeScrollEl.scrollHeight - 1 &&
+        startScrollTop + activeScrollEl.clientHeight >= activeScrollEl.scrollHeight - 1;
+
+      startY = null;
+
+      if (moved < 56) {
+        activeScrollEl = null;
+        return;
+      }
+
+      const idx = PAGE_ORDER.indexOf(currentPage);
+
+      if (deltaY < 0 && atBottom && idx < PAGE_ORDER.length - 1) {
+        navigate(PAGE_ORDER[idx + 1]);
+      } else if (deltaY > 0 && atTop && idx > 0) {
+        navigate(PAGE_ORDER[idx - 1]);
+      }
+
+      activeScrollEl = null;
+    };
+
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [booting, currentPage, navigate]);
+
+  useEffect(() => {
     if (typeof window === "undefined" || booting) return;
     window.sessionStorage.setItem(LAST_PAGE_KEY, currentPage);
   }, [booting, currentPage]);
@@ -121,8 +169,6 @@ export default function App() {
 
   return (
     <>
-      {booting && <BootScreen onDone={handleBootDone} />}
-
       {!booting && (
         <>
           {currentPage !== "home" && (

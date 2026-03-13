@@ -1,20 +1,22 @@
 import { useState } from "react";
 import { usePageAnim } from "../shared/usePageAnim";
+import { useIsMobile } from "../shared/useIsMobile";
 import { MODULES } from "../../constants/events";
 
 export function ModulesPage({ isExiting, navDir, onNavigate }) {
   const { anim } = usePageAnim(isExiting, navDir);
+  const isMobile = useIsMobile();
   const [hovered, setHovered] = useState(null);
   const featuredSignupEvent = MODULES.find((event) => event.status === "UPCOMING") ?? MODULES[0];
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", paddingTop: "3rem", paddingBottom: "6rem" }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", paddingTop: "3rem", paddingBottom: isMobile ? "4rem" : "6rem" }}>
 
       {/* 徽章 */}
       <div
         style={{
           fontFamily: "var(--mono)",
-          fontSize: 14,
+          fontSize: isMobile ? 11 : 14,
           background: "var(--cream)",
           color: "var(--coal)",
           padding: "4px 12px",
@@ -30,10 +32,10 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 0.9fr)",
-          gap: 40,
-          marginBottom: 68,
-          alignItems: "end",
+          gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.1fr) minmax(0, 0.9fr)",
+          gap: isMobile ? 18 : 40,
+          marginBottom: isMobile ? 36 : 68,
+          alignItems: isMobile ? "start" : "end",
           ...anim(25, 120),
         }}
       >
@@ -42,10 +44,10 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
             aria-hidden="true"
             style={{
               position: "absolute",
-              top: -34,
+              top: isMobile ? -16 : -34,
               left: -6,
               fontFamily: "var(--head)",
-              fontSize: "clamp(56px, 8vw, 120px)",
+              fontSize: isMobile ? "clamp(42px, 16vw, 72px)" : "clamp(56px, 8vw, 120px)",
               lineHeight: 0.9,
               color: "transparent",
               WebkitTextStroke: "1px rgba(212, 169, 106, 0.14)",
@@ -59,7 +61,7 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
           <div
             style={{
               fontFamily: "var(--mono)",
-              fontSize: 13,
+              fontSize: isMobile ? 11 : 13,
               letterSpacing: 2.4,
               color: "var(--sand)",
               marginBottom: 14,
@@ -70,7 +72,7 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
           <h1
             style={{
               fontFamily: "var(--head)",
-              fontSize: "clamp(48px, 6vw, 92px)",
+              fontSize: isMobile ? "clamp(40px, 14vw, 64px)" : "clamp(48px, 6vw, 92px)",
               lineHeight: 0.95,
               color: "var(--text)",
               position: "relative",
@@ -103,11 +105,11 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
         <p
           style={{
             fontFamily: "var(--sans)",
-            fontSize: 15,
-            lineHeight: 2,
+            fontSize: isMobile ? 13 : 15,
+            lineHeight: isMobile ? 1.9 : 2,
             color: "var(--text-dim)",
             maxWidth: 420,
-            justifySelf: "end",
+            justifySelf: isMobile ? "start" : "end",
           }}
         >
           這一頁不是抽象模組清單，而是正在發生與即將發生的活動編排。
@@ -116,7 +118,7 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
       </div>
 
       {/* 模組列表 */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 18 : 28 }}>
         {MODULES.map((module, i) => (
           <button
             key={module.id}
@@ -126,7 +128,7 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
               position: "relative",
               background: hovered === module.id ? module.bg : "rgba(33,30,26,0.6)",
               border: `2px solid ${hovered === module.id ? module.color : "rgba(200,191,176,0.15)"}`,
-              padding: "40px 48px 40px 88px",
+              padding: isMobile ? "24px 18px 22px 22px" : "40px 48px 40px 88px",
               textAlign: "left",
               width: "100%",
               transition: "background 0.2s steps(3), border-color 0.2s steps(3)",
@@ -146,10 +148,11 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
             <div
               style={{
                 position: "absolute",
-                left: -8,
-                top: -16,
+                left: isMobile ? "auto" : -8,
+                right: isMobile ? 10 : "auto",
+                top: isMobile ? -8 : -16,
                 fontFamily: "var(--head)",
-                fontSize: 88,
+                fontSize: isMobile ? 56 : 88,
                 color: "transparent",
                 WebkitTextStroke: `2px ${hovered === module.id ? module.color : "rgba(200,191,176,0.2)"}`,
                 lineHeight: 1,
@@ -164,65 +167,72 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
             <div
               style={{
                 display: "flex",
-                alignItems: "center",
+                alignItems: isMobile ? "flex-start" : "center",
+                flexDirection: isMobile ? "column" : "row",
                 justifyContent: "space-between",
-                gap: 20,
-                marginBottom: 24,
-                paddingBottom: 16,
+                gap: isMobile ? 10 : 20,
+                marginBottom: isMobile ? 18 : 24,
+                paddingBottom: isMobile ? 12 : 16,
                 borderBottom: `1px solid ${hovered === module.id ? module.color : "rgba(200,191,176,0.12)"}`,
               }}
             >
-              <div style={{ fontFamily: "var(--mono)", fontSize: 12, letterSpacing: 2.2, color: module.color }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: isMobile ? 10 : 12, letterSpacing: 2.2, color: module.color }}>
                 {module.label} / {module.status}
               </div>
               <div
                 style={{
                   display: "flex",
                   flexWrap: "wrap",
-                  justifyContent: "flex-end",
+                  justifyContent: isMobile ? "flex-start" : "flex-end",
                   gap: 10,
                   fontFamily: "var(--mono)",
-                  fontSize: 11,
+                  fontSize: isMobile ? 10 : 11,
                   letterSpacing: 1.6,
                   color: "var(--text-faint)",
                 }}
               >
                 <span>{module.dateRange}</span>
-                <span style={{ color: module.color }}>●</span>
-                <span>{module.schedule}</span>
-                <span style={{ color: module.color }}>●</span>
-                <span>{module.format}</span>
+                {!isMobile && (
+                  <>
+                    <span style={{ color: module.color }}>●</span>
+                    <span>{module.schedule}</span>
+                    <span style={{ color: module.color }}>●</span>
+                    <span>{module.format}</span>
+                  </>
+                )}
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "start" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 20 : 48, alignItems: "start" }}>
               <div>
                 <h2
                   style={{
                     fontFamily: "var(--head)",
-                    fontSize: "clamp(28px,3vw,44px)",
+                    fontSize: isMobile ? "clamp(24px, 8vw, 32px)" : "clamp(28px,3vw,44px)",
                     whiteSpace: "pre-line",
                     lineHeight: 1.1,
                     marginBottom: 8,
                     background: hovered === module.id ? module.color : "rgba(0,0,0,0)",
                     color: hovered === module.id ? "var(--coal)" : "var(--text)",
                     display: "inline-block",
-                    padding: "0 8px",
+                    padding: isMobile ? "0 6px" : "0 8px",
                     transition: "all 0.1s steps(2)",
                   }}
                 >
                   {module.title}
                 </h2>
-                <div style={{ fontFamily: "var(--mono)", fontSize: 14, color: module.color, letterSpacing: 2, marginTop: 4 }}>
-                  &gt;&gt; {module.subtitle}
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 20 }}>
+                {!isMobile && (
+                  <div style={{ fontFamily: "var(--mono)", fontSize: isMobile ? 11 : 14, color: module.color, letterSpacing: 2, marginTop: 4 }}>
+                    &gt;&gt; {module.subtitle}
+                  </div>
+                )}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: isMobile ? 12 : 20 }}>
                   {module.tags.map((tag) => (
                     <span
                       key={tag}
                       style={{
                         fontFamily: "var(--mono)",
-                        fontSize: 13,
+                        fontSize: isMobile ? 11 : 13,
                         letterSpacing: 1.5,
                         padding: "3px 10px",
                         border: `1px solid ${hovered === module.id ? module.color : "var(--border)"}`,
@@ -235,34 +245,75 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
                   ))}
                 </div>
               </div>
-              <div>
-                <div
+              {!isMobile && (
+                <div>
+                  <div
+                    style={{
+                      fontFamily: "var(--mono)",
+                      fontSize: isMobile ? 10 : 12,
+                      letterSpacing: 2,
+                      color: "var(--text-faint)",
+                      marginBottom: 12,
+                    }}
+                  >
+                    ACTIVE PROGRAM BRIEF
+                  </div>
+                  <p style={{ fontFamily: "var(--sans)", fontSize: isMobile ? 13 : 14, lineHeight: isMobile ? 1.9 : 2, color: "var(--text-dim)", marginTop: 4 }}>
+                    {module.description}
+                  </p>
+                  <div
+                    style={{
+                      marginTop: 20,
+                      fontFamily: "var(--mono)",
+                      fontSize: isMobile ? 10 : 12,
+                      letterSpacing: 2,
+                      color: module.color,
+                    }}
+                  >
+                    {module.actionLabel} →
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {isMobile && (
+              <div
+                style={{
+                  marginTop: 16,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  paddingTop: 14,
+                  borderTop: `1px dashed ${hovered === module.id ? module.color : "rgba(200,191,176,0.14)"}`,
+                }}
+              >
+                <span
                   style={{
                     fontFamily: "var(--mono)",
-                    fontSize: 12,
-                    letterSpacing: 2,
+                    fontSize: 10,
+                    letterSpacing: 1.8,
                     color: "var(--text-faint)",
-                    marginBottom: 12,
                   }}
                 >
-                  ACTIVE PROGRAM BRIEF
-                </div>
-                <p style={{ fontFamily: "var(--sans)", fontSize: 14, lineHeight: 2, color: "var(--text-dim)", marginTop: 4 }}>
-                  {module.description}
-                </p>
-                <div
+                  TAP TO OPEN
+                </span>
+                <span
                   style={{
-                    marginTop: 20,
                     fontFamily: "var(--mono)",
-                    fontSize: 12,
+                    fontSize: 11,
                     letterSpacing: 2,
-                    color: module.color,
+                    color: "var(--coal)",
+                    background: module.color,
+                    border: `1px solid ${module.color}`,
+                    padding: "7px 10px",
+                    fontWeight: 700,
                   }}
                 >
                   {module.actionLabel} →
-                </div>
+                </span>
               </div>
-            </div>
+            )}
           </button>
         ))}
       </div>
@@ -270,20 +321,22 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
       {/* CTA */}
       <div
         style={{
-          marginTop: 48,
-          padding: "28px 36px",
+          marginTop: isMobile ? 32 : 48,
+          padding: isMobile ? "20px 18px" : "28px 36px",
           border: "2px dashed rgba(196,153,138,0.3)",
           display: "flex",
+          flexDirection: isMobile ? "column" : "row",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: isMobile ? "flex-start" : "center",
+          gap: isMobile ? 16 : 0,
           ...anim(280, 0),
         }}
       >
         <div>
-          <div style={{ fontFamily: "var(--head)", fontSize: 28, color: "var(--rose)" }}>
+          <div style={{ fontFamily: "var(--head)", fontSize: isMobile ? 22 : 28, color: "var(--rose)" }}>
             YOU ARE THE MISSING PIECE
           </div>
-          <div style={{ fontFamily: "var(--mono)", fontSize: 14, color: "var(--text-faint)", marginTop: 6 }}>
+          <div style={{ fontFamily: "var(--mono)", fontSize: isMobile ? 11 : 14, color: "var(--text-faint)", marginTop: 6, lineHeight: isMobile ? 1.8 : "normal" }}>
             {featuredSignupEvent
               ? `${featuredSignupEvent.title.replace(/\n/g, " ")} 差你一個 — 點擊去報名`
               : "最新活動差你一個 — 點擊去報名"}
@@ -295,10 +348,10 @@ export function ModulesPage({ isExiting, navDir, onNavigate }) {
           rel="noreferrer"
           style={{
             fontFamily: "var(--mono)",
-            fontSize: 13,
+            fontSize: isMobile ? 11 : 13,
             letterSpacing: 2,
             fontWeight: 700,
-            padding: "12px 32px",
+            padding: isMobile ? "10px 18px" : "12px 32px",
             background: "var(--rose)",
             color: "var(--coal)",
             border: "2px solid var(--coal)",

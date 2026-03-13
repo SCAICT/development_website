@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePageAnim } from "../shared/usePageAnim";
+import { useIsMobile } from "../shared/useIsMobile";
 
 const BUILD_LINES = [
   { type: "dim",    text: "[ SCAICT · SYSTEM STATUS ]" },
@@ -23,6 +24,7 @@ const TYPE_COLOR = {
 
 export function EpiloguePage({ isExiting, navDir }) {
   const { anim } = usePageAnim(isExiting, navDir);
+  const isMobile = useIsMobile();
   const [visibleLines, setVisibleLines] = useState(0);
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export function EpiloguePage({ isExiting, navDir }) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "4rem 2rem",
+        padding: isMobile ? "3rem 1rem" : "4rem 2rem",
         position: "relative",
         overflow: "hidden",
       }}
@@ -67,7 +69,7 @@ export function EpiloguePage({ isExiting, navDir }) {
         <span
           style={{
             fontFamily: "var(--head)",
-            fontSize: "clamp(100px, 22vw, 280px)",
+            fontSize: isMobile ? "clamp(72px, 28vw, 140px)" : "clamp(100px, 22vw, 280px)",
             color: "transparent",
             WebkitTextStroke: "1px rgba(210,190,170,0.04)",
             lineHeight: 1,
@@ -83,12 +85,12 @@ export function EpiloguePage({ isExiting, navDir }) {
       <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 760 }}>
 
         {/* 膠帶標籤 */}
-        <div style={{ ...anim(0, 200), marginBottom: 48 }}>
+        <div style={{ ...anim(0, 200), marginBottom: isMobile ? 28 : 48 }}>
           <span
             style={{
               fontFamily: "var(--mono)",
-              fontSize: 9,
-              letterSpacing: 4,
+              fontSize: isMobile ? 8 : 9,
+              letterSpacing: isMobile ? 2.4 : 4,
               color: "var(--text-faint)",
               padding: "5px 14px",
               border: "1px solid var(--border-light)",
@@ -103,7 +105,7 @@ export function EpiloguePage({ isExiting, navDir }) {
         <h1
           style={{
             fontFamily: "var(--head)",
-            fontSize: "clamp(44px, 8vw, 100px)",
+            fontSize: isMobile ? "clamp(34px, 12vw, 54px)" : "clamp(44px, 8vw, 100px)",
             lineHeight: 0.92,
             margin: "0 0 12px",
             ...anim(60, 160),
@@ -125,7 +127,7 @@ export function EpiloguePage({ isExiting, navDir }) {
               display: "block",
               background: "var(--rose)",
               color: "var(--coal)",
-              padding: "0 16px",
+              padding: isMobile ? "0 10px" : "0 16px",
               width: "max-content",
               transform: "rotate(0.5deg)",
               marginTop: 8,
@@ -139,14 +141,14 @@ export function EpiloguePage({ isExiting, navDir }) {
         <p
           style={{
             fontFamily: "var(--mono)",
-            fontSize: 13,
-            lineHeight: 2.2,
+            fontSize: isMobile ? 11 : 13,
+            lineHeight: isMobile ? 2 : 2.2,
             color: "var(--text-dim)",
             maxWidth: 480,
-            marginTop: 36,
-            marginBottom: 48,
+            marginTop: isMobile ? 24 : 36,
+            marginBottom: isMobile ? 28 : 48,
             borderLeft: "3px solid var(--rose)",
-            paddingLeft: 20,
+            paddingLeft: isMobile ? 14 : 20,
             ...anim(140, 100),
           }}
         >
@@ -166,7 +168,7 @@ export function EpiloguePage({ isExiting, navDir }) {
           {/* terminal title bar */}
           <div
             style={{
-              padding: "8px 16px",
+              padding: isMobile ? "8px 12px" : "8px 16px",
               borderBottom: "1px solid var(--border)",
               display: "flex",
               gap: 8,
@@ -182,7 +184,7 @@ export function EpiloguePage({ isExiting, navDir }) {
           </div>
 
           {/* log 行 */}
-          <div style={{ padding: "20px 24px", fontFamily: "var(--mono)", fontSize: 12, lineHeight: 2.2 }}>
+          <div style={{ padding: isMobile ? "16px 12px" : "20px 24px", fontFamily: "var(--mono)", fontSize: isMobile ? 11 : 12, lineHeight: isMobile ? 2 : 2.2 }}>
             {BUILD_LINES.slice(0, visibleLines).map((line, i) => (
               <div
                 key={i}
@@ -207,16 +209,16 @@ export function EpiloguePage({ isExiting, navDir }) {
         {/* 底部 */}
         <div
           style={{
-            marginTop: 48,
+            marginTop: isMobile ? 28 : 48,
             display: "flex",
-            alignItems: "center",
+            alignItems: isMobile ? "flex-start" : "center",
             justifyContent: "space-between",
             flexWrap: "wrap",
             gap: 16,
             ...anim(260, 0),
           }}
         >
-          <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--text-faint)", letterSpacing: 2, lineHeight: 2 }}>
+          <div style={{ fontFamily: "var(--mono)", fontSize: isMobile ? 9 : 10, color: "var(--text-faint)", letterSpacing: 2, lineHeight: 2 }}>
             LAST UPDATED: {new Date().toISOString().slice(0, 10)}
             <br />
             <span style={{ color: "var(--sage)" }}>● LIVE · ACTIVELY UPDATING</span>
@@ -228,7 +230,7 @@ export function EpiloguePage({ isExiting, navDir }) {
                 key={tag}
                 style={{
                   fontFamily: "var(--head)",
-                  fontSize: 12,
+                  fontSize: isMobile ? 11 : 12,
                   border: `1.5px solid ${["var(--rose)", "var(--slate)", "var(--sand)"][i]}`,
                   color: ["var(--rose)", "var(--slate)", "var(--sand)"][i],
                   padding: "3px 10px",

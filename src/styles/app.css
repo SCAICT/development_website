@@ -143,6 +143,16 @@ p {
   padding-bottom: 40px;
 }
 
+.boot-brand-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.boot-mobile-wordmark {
+  display: none;
+}
+
 .boot-logo-ascii {
   font-size: 16px;
   line-height: 1.45;
@@ -440,6 +450,10 @@ p {
   color: var(--ash);
 }
 
+.home-kicker-mobile {
+  display: none;
+}
+
 .home-kicker-bracket {
   color: var(--rose);
   font-size: 1.1em;
@@ -534,6 +548,10 @@ p {
 .home-manifesto strong {
   color: var(--rose);
   font-size: inherit;
+}
+
+.home-manifesto-mobile {
+  display: none;
 }
 
 /* 打字機 */
@@ -835,37 +853,163 @@ p {
     flex-direction: column;
   }
 
+  .boot-left,
   .boot-right {
     width: 100%;
-    min-height: 320px;
+  }
+
+  .boot-right {
+    order: 0;
+    min-height: 40vh;
     border-left: 0;
-    border-top: 1px solid rgba(200, 190, 175, 0.1);
+    border-top: 0;
+    border-bottom: 1px solid rgba(200, 190, 175, 0.1);
+    justify-content: center;
+    padding: 38px 16px 28px;
+    background:
+      radial-gradient(circle at top center, rgba(94, 143, 191, 0.24), transparent 42%),
+      linear-gradient(180deg, rgba(16, 18, 30, 0.98) 0%, rgba(11, 11, 15, 1) 100%);
+  }
+
+  .boot-left {
+    order: 1;
+    min-height: 58vh;
+    padding: 28px 16px 36px;
+    justify-content: flex-start;
+    background:
+      linear-gradient(180deg, rgba(212, 117, 106, 0.05) 0%, transparent 18%),
+      #09090d;
+  }
+
+  .boot-brand-block {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .boot-mobile-wordmark {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    opacity: 0;
+    animation: boot-line-in 0.45s ease forwards;
+    animation-delay: 0.2s;
+  }
+
+  .boot-mobile-wordmark-main {
+    font-family: var(--head);
+    font-size: clamp(34px, 10vw, 54px);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    text-shadow: 0 0 16px rgba(212, 117, 106, 0.2);
+  }
+
+  .boot-mobile-wordmark-sub {
+    font-family: var(--mono);
+    font-size: 7px;
+    letter-spacing: 1.8px;
+    color: rgba(200, 190, 175, 0.42);
+    text-align: center;
+  }
+
+  .boot-logo-ascii {
+    display: none;
+  }
+
+  .boot-mascot {
+    width: min(36vw, 138px);
+    margin-top: 2px;
+    filter: drop-shadow(0 0 24px rgba(212, 117, 106, 0.26));
+  }
+
+  .boot-tagline {
+    margin-top: 6px;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  .boot-progress-wrap {
+    position: static;
+    width: 100%;
+    margin-top: 12px;
+    padding: 0;
+  }
+
+  .boot-log-line {
+    font-size: 11px;
+    line-height: 1.75;
+  }
+
+  .boot-progress-label {
+    font-size: 9px;
+    letter-spacing: 2.2px;
   }
 
   .home-masthead {
-    display: grid;
-    grid-template-columns: 1fr;
-    justify-items: start;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 8px;
     padding: 12px 16px 10px;
   }
 
   .home-masthead-title {
+    font-size: 0.72rem;
     letter-spacing: 0.18em;
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .home-masthead-meta {
+    font-size: 0.56rem;
+    letter-spacing: 0.24em;
+  }
+
+  .home-masthead-meta-right {
+    display: none;
   }
 
   .home-center {
     width: min(460px, 88vw);
   }
 
+  .home-title,
+  .home-title-bg {
+    font-size: clamp(5.8rem, 18vw, 7.2rem);
+  }
+
   .home-kicker {
-    font-size: 0.58rem;
-    letter-spacing: 0.18em;
-    padding: 6px 10px;
+    gap: 6px;
+    font-size: 0.52rem;
+    letter-spacing: 0.14em;
+    padding: 5px 9px;
+  }
+
+  .home-kicker-desktop {
+    display: none;
+  }
+
+  .home-kicker-mobile {
+    display: inline-block;
+    white-space: nowrap;
+    line-height: 1;
+    letter-spacing: 0.12em;
   }
 
   .home-manifesto {
     padding: 12px 14px;
     font-size: 0.76rem;
+  }
+
+  .home-manifesto-desktop {
+    display: none;
+  }
+
+  .home-manifesto-mobile {
+    display: block;
   }
 
   .home-stamp {

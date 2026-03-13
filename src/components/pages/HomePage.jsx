@@ -27,9 +27,9 @@ export function HomePage({ isExiting, navDir }) {
 
       {/* ── 頂部報頭 ── */}
       <header className="home-masthead" style={anim(0, 220)}>
-        <span className="home-masthead-meta">ISSUE 001 · VOL.01 · 2026</span>
+        <span className="home-masthead-meta home-masthead-meta-left">ISSUE 001 · VOL.01 · 2026</span>
         <span className="home-masthead-title">SCAICT  ZINE</span>
-        <span className="home-masthead-meta">CENTRAL TAIWAN · [ SYS_ONLINE ]</span>
+        <span className="home-masthead-meta home-masthead-meta-right">CENTRAL TAIWAN · [ SYS_ONLINE ]</span>
       </header>
 
       {/* ── 主視覺區 ── */}
@@ -46,7 +46,10 @@ export function HomePage({ isExiting, navDir }) {
           {/* kicker */}
           <div className="home-kicker" style={anim(60, 180)}>
             <span className="home-kicker-bracket">[</span>
-            &nbsp;SYS_ONLINE&nbsp;·&nbsp;STUDENTS' COMPUTING CONFERENCE&nbsp;·&nbsp;2026&nbsp;
+            <span className="home-kicker-desktop">
+              &nbsp;SYS_ONLINE&nbsp;·&nbsp;STUDENTS' COMPUTING CONFERENCE&nbsp;·&nbsp;2026&nbsp;
+            </span>
+            <span className="home-kicker-mobile">SYS_ONLINE · CONF · 2026</span>
             <span className="home-kicker-bracket">]</span>
           </div>
 
@@ -89,8 +92,10 @@ export function HomePage({ isExiting, navDir }) {
 
           {/* 宣言文字 */}
           <div className="home-manifesto" style={anim(275, 45)}>
-            <p>student computing collective / central taiwan</p>
-            <strong>WE ARE THE SYSTEM OVERRIDE.</strong>
+            <p className="home-manifesto-desktop">student computing collective / central taiwan</p>
+            <p className="home-manifesto-mobile">student collective 2026 / SCAICT 5th</p>
+            <strong className="home-manifesto-desktop">WE ARE THE SYSTEM OVERRIDE.</strong>
+            <strong className="home-manifesto-mobile">WE ARE THE OVERRIDE.</strong>
           </div>
 
           {/* 打字機 */}
