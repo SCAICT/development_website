@@ -9,8 +9,8 @@ import { PartnersPage } from "./components/pages/PartnersPage";
 import { EpiloguePage } from "./components/pages/EpiloguePage";
 
 const PAGE_ORDER = ["home", "about", "modules", "events", "partners", "epilogue"];
-const BOOTED_KEY = "scaict:booted";
 const LAST_PAGE_KEY = "scaict:last-page";
+const RETURN_TO_MAIN_KEY = "scaict:return-to-main";
 
 function getStoredPage() {
   if (typeof window === "undefined") return "home";
@@ -23,7 +23,12 @@ export default function App() {
   const isGalleryRoute = typeof window !== "undefined" && window.location.pathname.startsWith("/gallery/");
   const [booting, setBooting] = useState(() => {
     if (typeof window === "undefined") return true;
-    return window.sessionStorage.getItem(BOOTED_KEY) !== "1";
+    const isReturningFromSubpage = window.sessionStorage.getItem(RETURN_TO_MAIN_KEY) === "1";
+    if (isReturningFromSubpage) {
+      window.sessionStorage.removeItem(RETURN_TO_MAIN_KEY);
+      return false;
+    }
+    return true;
   });
   const [currentPage, setCurrentPage] = useState(getStoredPage);
   const [exitingPage, setExitingPage] = useState(null);
@@ -35,7 +40,6 @@ export default function App() {
   const handleBootDone = useCallback(() => {
     setBooting(false);
     if (typeof window !== "undefined") {
-      window.sessionStorage.setItem(BOOTED_KEY, "1");
       window.sessionStorage.setItem(LAST_PAGE_KEY, "home");
     }
   }, []);
@@ -108,7 +112,6 @@ export default function App() {
 
   useEffect(() => {
     if (typeof window === "undefined" || booting) return;
-    window.sessionStorage.setItem(BOOTED_KEY, "1");
     window.sessionStorage.setItem(LAST_PAGE_KEY, currentPage);
   }, [booting, currentPage]);
 

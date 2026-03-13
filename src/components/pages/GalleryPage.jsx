@@ -3,6 +3,9 @@ import { EVENTS } from "../../constants/events";
 export function GalleryPage() {
   const slug = window.location.pathname.replace(/^\/gallery\//, "").replace(/\/$/, "");
   const event = EVENTS.find((item) => item.slug === slug);
+  const handleBackToMain = () => {
+    window.sessionStorage.setItem("scaict:return-to-main", "1");
+  };
 
   if (!event) {
     return (
@@ -15,7 +18,7 @@ export function GalleryPage() {
         }}
       >
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <a href="/" style={{ fontFamily: "var(--mono)", fontSize: 12, letterSpacing: 2, color: "var(--sand)" }}>
+          <a href="/" onClick={handleBackToMain} style={{ fontFamily: "var(--mono)", fontSize: 12, letterSpacing: 2, color: "var(--sand)" }}>
             ← BACK TO SCAICT
           </a>
           <div style={{ marginTop: 48, fontFamily: "var(--head)", fontSize: "clamp(44px, 8vw, 108px)", lineHeight: 0.92 }}>
@@ -41,7 +44,7 @@ export function GalleryPage() {
     >
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 24, alignItems: "flex-start" }}>
-          <a href="/" style={{ fontFamily: "var(--mono)", fontSize: 12, letterSpacing: 2, color: event.color }}>
+          <a href="/" onClick={handleBackToMain} style={{ fontFamily: "var(--mono)", fontSize: 12, letterSpacing: 2, color: event.color }}>
             ← BACK TO SCAICT
           </a>
           <div style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: 1.8, color: "var(--text-faint)", textAlign: "right" }}>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BOOT_ASCII, BOOT_SEQUENCE } from "../../constants/boot";
 import mascotFallback from "../../assets/mascot.svg";
+import mascotImage from "../../../public/images/site/mascot/uwu.png";
 
 export function BootScreen({ onDone }) {
   const [visibleLines, setVisibleLines] = useState([]);
@@ -53,7 +54,7 @@ export function BootScreen({ onDone }) {
         <br />
         <br />
         <img
-          src="/images/site/mascot/uwu.png"
+          src={mascotImage}
           alt="SCAICT Mascot"
           className="boot-mascot"
           onError={(event) => {
