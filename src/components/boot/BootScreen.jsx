@@ -57,6 +57,8 @@ export function BootScreen({ onDone }) {
           </div>
           <pre className="boot-logo-ascii">{BOOT_ASCII}</pre>
         </div>
+        <br />
+        <br />
         <img
           src={mascotImage}
           alt="SCAICT Mascot"
