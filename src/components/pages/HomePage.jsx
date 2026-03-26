@@ -1,5 +1,6 @@
 import { usePageAnim } from "../shared/usePageAnim";
 import { Typewriter } from "../shared/Typewriter";
+import mastheadLogo from "../../image/logo.png";
 
 function MarqueeStrip() {
   const items = ["CODE YOUR WORLD", "中部高中電資", "BREAK THE SYSTEM", "BUILD THE FUTURE", "OPEN SOURCE", "COMMUNITY", "SCAICT · VOL.01"];
@@ -28,7 +29,7 @@ export function HomePage({ isExiting, navDir }) {
       {/* ── 頂部報頭 ── */}
       <header className="home-masthead" style={anim(0, 220)}>
         <span className="home-masthead-meta home-masthead-meta-left">ISSUE 001 · VOL.01 · 2026</span>
-        <span className="home-masthead-title">SCAICT  ZINE</span>
+        <img className="home-masthead-logo" src={mastheadLogo} alt="SCAICT ZINE" />
         <span className="home-masthead-meta home-masthead-meta-right">CENTRAL TAIWAN · [ SYS_ONLINE ]</span>
       </header>
 
@@ -57,7 +58,7 @@ export function HomePage({ isExiting, navDir }) {
           <div className="home-title-block" style={anim(120, 140)}>
             {/* 浮水印影子 */}
             <div className="home-title-bg" aria-hidden="true">SCAICT</div>
-            <h1 className="home-title">SCAICT</h1>
+            <h1 className="home-title" data-text="SCAICT">SCAICT</h1>
           </div>
 
           {/* 分隔線 */}
