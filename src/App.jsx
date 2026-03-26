@@ -6,6 +6,7 @@ import { HomePage } from "./components/pages/HomePage";
 import { ModulesPage } from "./components/pages/ModulesPage";
 import { PartnersPage } from "./components/pages/PartnersPage";
 import { EpiloguePage } from "./components/pages/EpiloguePage";
+import { BootScreen } from "./components/boot/BootScreen";
 
 const PAGE_ORDER = ["home", "about", "modules", "events", "partners", "epilogue"];
 const LAST_PAGE_KEY = "scaict:last-page";
@@ -20,7 +21,7 @@ function getStoredPage() {
 
 export default function App() {
   const isGalleryRoute = typeof window !== "undefined" && window.location.pathname.startsWith("/gallery/");
-  const [booting] = useState(false);
+  const [booting, setBooting] = useState(!isGalleryRoute);
   const [currentPage, setCurrentPage] = useState(getStoredPage);
   const [exitingPage, setExitingPage] = useState(null);
   const [navDir, setNavDir] = useState("forward"); // "forward" | "backward"
@@ -169,6 +170,8 @@ export default function App() {
 
   return (
     <>
+      {booting && <BootScreen onDone={() => setBooting(false)} />}
+
       {!booting && (
         <>
           {currentPage !== "home" && (
